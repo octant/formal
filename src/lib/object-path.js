@@ -24,3 +24,20 @@ export function set(object, path, value) {
 
   return obj;
 }
+
+export function push(object, path, value) {
+  const obj = { ...object };
+  const pList = path.split(".");
+  const key = pList.pop();
+
+  const pointer = pList.reduce((accumulator, currentValue) => {
+    return accumulator[currentValue];
+  }, obj);
+
+  if (!Array.isArray(pointer[key]))
+    throw new TypeError("path must be an Array");
+
+  pointer[key] = [...pointer[key], value];
+
+  return obj;
+}

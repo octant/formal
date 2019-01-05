@@ -1,4 +1,4 @@
-import { get, set } from "./object-path";
+import { get, set, push } from "./object-path";
 
 const person = {
   firstName: "Michael",
@@ -68,5 +68,53 @@ describe("set", () => {
     const homer = set(person, "vehicles.0.model", "Canyonero");
 
     expect(homer.vehicles[0].model).toBe("Canyonero");
+  });
+});
+
+describe("push", () => {
+  const helpdesk = {
+    ext: 2349,
+    tickets: [
+      {
+        id: 1,
+        subject: "Form is broken in IE",
+        body: "Can't submit form.",
+        related: ["#18271"]
+      }
+    ]
+  };
+
+  const newTicket = {
+    id: 2,
+    subject: "Help!!!",
+    body: ""
+  };
+
+  it("should not modify the original", () => {
+    push(helpdesk, "tickets", { ...newTicket });
+
+    expect(helpdesk.tickets.length).toBe(1);
+  });
+
+  it("push a value into an existing array", () => {
+    const withNewTicket = push(helpdesk, "tickets", { ...newTicket });
+
+    expect(withNewTicket.tickets.length).toBe(2);
+    expect(withNewTicket.tickets[1].id).toBe(2);
+  });
+
+  it("push a value into a nested array", () => {
+    const addRelated = push(helpdesk, "tickets.0.related", "#13211");
+
+    expect(addRelated.tickets[0].related.length).toBe(2);
+    expect(addRelated.tickets[0].related[1]).toBe("#13211");
+  });
+
+  it("throws TypeError if path is not an array", () => {
+    function throwTypeError() {
+      push(helpdesk, "ext", { ...newTicket });
+    }
+
+    expect(throwTypeError).toThrow();
   });
 });

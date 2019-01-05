@@ -41,3 +41,15 @@ export function push(object, path, value) {
 
   return obj;
 }
+
+export function traverse(object, callback, paths = []) {
+  Object.entries(object).forEach(([key, value]) => {
+    if (Object.prototype.toString.call(value) === "[object Object]") {
+      return traverse(object[key], callback, [...paths, key]);
+    } else if (Object.prototype.toString.call(value) === "[object Array]") {
+      value.map((item, i) => traverse(item, callback, [...paths, key, i]));
+    } else {
+      callback([...paths, key].join("."), object[key]);
+    }
+  });
+}

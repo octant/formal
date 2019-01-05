@@ -1,4 +1,4 @@
-import { get, set, push } from "./object-path";
+import { get, set, push, traverse } from "./object-path";
 
 const person = {
   firstName: "Michael",
@@ -116,5 +116,17 @@ describe("push", () => {
     }
 
     expect(throwTypeError).toThrow();
+  });
+});
+
+describe("traverse", () => {
+  it("should call a function for every key value pair", () => {
+    const keyValueList = [];
+    const cb = (key, value) => (keyValueList[key] = value);
+
+    traverse(person, cb);
+
+    expect(Object.keys(keyValueList).length).toBe(10);
+    expect(keyValueList["vehicles.0.year"]).toBe("2004");
   });
 });

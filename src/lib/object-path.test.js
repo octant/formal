@@ -121,6 +121,14 @@ describe("push", () => {
 
 describe("traverse", () => {
   it("should call a function for every key value pair", () => {
+    const cb = jest.fn();
+
+    traverse(person, cb);
+
+    expect(cb.mock.calls.length).toBe(10);
+  });
+
+  it("should pass a string path and value for each property", () => {
     const keyValueList = [];
     const cb = (key, value) => (keyValueList[key] = value);
 

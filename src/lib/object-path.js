@@ -11,7 +11,7 @@ export function get(object, path) {
 }
 
 export function set(object, path, value) {
-  const obj = { ...object };
+  const obj = JSON.parse(JSON.stringify(object));
   const pList = path.split(".");
   const key = pList.pop();
 
@@ -25,8 +25,22 @@ export function set(object, path, value) {
   return obj;
 }
 
+export function remove(object, path) {
+  const obj = JSON.parse(JSON.stringify(object));
+  const pList = path.split(".");
+  const key = pList.pop();
+
+  const pointer = pList.reduce((accumulator, currentValue) => {
+    return accumulator[currentValue];
+  }, obj);
+
+  delete pointer[key];
+
+  return obj;
+}
+
 export function push(object, path, value) {
-  const obj = { ...object };
+  const obj = JSON.parse(JSON.stringify(object));
   const pList = path.split(".");
   const key = pList.pop();
 

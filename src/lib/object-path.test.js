@@ -1,4 +1,4 @@
-import { get, set, push, traverse } from "./object-path";
+import { get, remove, set, push, traverse } from "./object-path";
 
 const person = {
   firstName: "Michael",
@@ -13,6 +13,26 @@ const person = {
     country: "US"
   }
 };
+
+describe("remove", () => {
+  it("removes the value of a root property", () => {
+    const withRemove = remove(person, "firstName");
+    expect(withRemove.firstName).toBe(undefined);
+    expect(withRemove.lastName).toBe("Scott");
+  });
+
+  it("removes the value of a nested property", () => {
+    const withRemove = remove(person, "address.city");
+    expect(withRemove.address.city).toBe(undefined);
+    expect(withRemove.address.state).toBe("PA");
+  });
+
+  it("removes the value of property nested in an array", () => {
+    const withRemove = remove(person, "vehicles.0.model");
+    expect(withRemove.vehicles[0].model).toBe(undefined);
+    expect(withRemove.vehicles[0].make).toBe("Chrysler");
+  });
+});
 
 describe("get", () => {
   it("gets the value of a root property", () => {
@@ -30,10 +50,11 @@ describe("get", () => {
 
 describe("set", () => {
   it("does not modify the original object", () => {
-    const homer = set(person, "firstName", "Homer");
+    const homer = set(person, "address.state", "IL");
 
     expect(homer).not.toBe(person);
-    expect(homer.firstName).toBe("Homer");
+    expect(homer.address.state).toBe("IL");
+    expect(person.address.state).toBe("PA");
   });
 
   it("sets an existing root property", () => {

@@ -119,11 +119,11 @@ describe("push", () => {
   });
 });
 
-describe("traverse", () => {
+describe("traverse - key/value", () => {
   it("should call a function for every key value pair", () => {
     const cb = jest.fn();
 
-    traverse(person, cb);
+    traverse(person, { keyValue: cb });
 
     expect(cb.mock.calls.length).toBe(10);
   });
@@ -132,9 +132,65 @@ describe("traverse", () => {
     const keyValueList = [];
     const cb = (key, value) => (keyValueList[key] = value);
 
-    traverse(person, cb);
+    traverse(person, { keyValue: cb });
 
     expect(Object.keys(keyValueList).length).toBe(10);
     expect(keyValueList["vehicles.0.year"]).toBe("2004");
+  });
+});
+
+describe("traverse - array", () => {
+  it("should call a function before each array", () => {
+    const cbKeyValue = jest.fn();
+    const cbBeforeArray = jest.fn();
+
+    traverse(person, { keyValue: cbKeyValue, beforeArray: cbBeforeArray });
+
+    expect(cbBeforeArray.mock.calls.length).toBe(1);
+  });
+
+  it("should call a function after each array", () => {
+    const cbKeyValue = jest.fn();
+    const cbAfterArray = jest.fn();
+
+    traverse(person, { keyValue: cbKeyValue, afterArray: cbAfterArray });
+
+    expect(cbAfterArray.mock.calls.length).toBe(1);
+  });
+
+  it("should call a function before each array item", () => {
+    const cbKeyValue = jest.fn();
+    const cbBeforeArray = jest.fn();
+
+    traverse(person, { keyValue: cbKeyValue, beforeArrayItem: cbBeforeArray });
+
+    expect(cbBeforeArray.mock.calls.length).toBe(1);
+  });
+
+  it("should call a function after each array item", () => {
+    const cbKeyValue = jest.fn();
+    const cbAfterArray = jest.fn();
+
+    traverse(person, { keyValue: cbKeyValue, afterArrayItem: cbAfterArray });
+
+    expect(cbAfterArray.mock.calls.length).toBe(1);
+  });
+
+  it("should call a function before each array object", () => {
+    const cbKeyValue = jest.fn();
+    const cbBeforeObject = jest.fn();
+
+    traverse(person, { keyValue: cbKeyValue, beforeObject: cbBeforeObject });
+
+    expect(cbBeforeObject.mock.calls.length).toBe(1);
+  });
+
+  it("should call a function after each object", () => {
+    const cbKeyValue = jest.fn();
+    const cbAfterObject = jest.fn();
+
+    traverse(person, { keyValue: cbKeyValue, afterObject: cbAfterObject });
+
+    expect(cbAfterObject.mock.calls.length).toBe(1);
   });
 });

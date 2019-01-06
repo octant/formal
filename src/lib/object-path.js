@@ -42,14 +42,33 @@ export function push(object, path, value) {
   return obj;
 }
 
-export function traverse(object, callback, paths = []) {
+export function traverse(object, hooks, paths = []) {
   Object.entries(object).forEach(([key, value]) => {
     if (Object.prototype.toString.call(value) === "[object Object]") {
-      return traverse(object[key], callback, [...paths, key]);
+      if (hooks.beforeObject)
+        hooks.beforeObject([...paths, key].join("."), value);
+
+      traverse(object[key], hooks, [...paths, key]);
+
+      if (hooks.afterObject)
+        hooks.afterObject([...paths, key].join("."), value);
     } else if (Object.prototype.toString.call(value) === "[object Array]") {
-      value.map((item, i) => traverse(item, callback, [...paths, key, i]));
+      if (hooks.beforeArray)
+        hooks.beforeArray([...paths, key].join("."), value);
+
+      value.forEach((item, i) => {
+        if (hooks.beforeArrayItem)
+          hooks.beforeArrayItem([...paths, key, i].join("."), item);
+
+        traverse(item, hooks, [...paths, key, i]);
+
+        if (hooks.afterArrayItem)
+          hooks.afterArrayItem([...paths, key, i].join("."), item);
+      });
+
+      if (hooks.afterArray) hooks.afterArray([...paths, key].join("."), value);
     } else {
-      callback([...paths, key].join("."), object[key]);
+      hooks.keyValue([...paths, key].join("."), object[key]);
     }
   });
 }

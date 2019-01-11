@@ -1,4 +1,11 @@
-import { get, remove, set, push, traverse } from "./object-path";
+import {
+  get,
+  removeKey,
+  removeIndex,
+  set,
+  push,
+  traverse
+} from "./object-path";
 
 const person = {
   firstName: "Michael",
@@ -13,26 +20,6 @@ const person = {
     country: "US"
   }
 };
-
-describe("remove", () => {
-  it("removes the value of a root property", () => {
-    const withRemove = remove(person, "firstName");
-    expect(withRemove.firstName).toBe(undefined);
-    expect(withRemove.lastName).toBe("Scott");
-  });
-
-  it("removes the value of a nested property", () => {
-    const withRemove = remove(person, "address.city");
-    expect(withRemove.address.city).toBe(undefined);
-    expect(withRemove.address.state).toBe("PA");
-  });
-
-  it("removes the value of property nested in an array", () => {
-    const withRemove = remove(person, "vehicles.0.model");
-    expect(withRemove.vehicles[0].model).toBe(undefined);
-    expect(withRemove.vehicles[0].make).toBe("Chrysler");
-  });
-});
 
 describe("get", () => {
   it("gets the value of a root property", () => {
@@ -213,5 +200,58 @@ describe("traverse - array", () => {
     traverse(person, { keyValue: cbKeyValue, afterObject: cbAfterObject });
 
     expect(cbAfterObject.mock.calls.length).toBe(1);
+  });
+});
+
+describe("removeKey", () => {
+  it("removes a root key", () => {
+    const withRemove = removeKey(person, "firstName");
+    expect(withRemove.firstName).toBe(undefined);
+    expect(withRemove.lastName).toBe("Scott");
+  });
+
+  it("removes a nested key", () => {
+    const withRemove = removeKey(person, "address.city");
+    expect(withRemove.address.city).toBe(undefined);
+    expect(withRemove.address.state).toBe("PA");
+  });
+
+  it("removes key nested in an array", () => {
+    const withRemove = removeKey(person, "vehicles.0.model");
+    expect(withRemove.vehicles[0].model).toBe(undefined);
+    expect(withRemove.vehicles[0].make).toBe("Chrysler");
+  });
+});
+
+describe("removeIndex", () => {
+  const ticket = {
+    requester: "dschrute@dundermifflin.com",
+    subject: "Corporate espionage?",
+    body:
+      "I found a strange cable connected to my computer. Can you take a look?",
+    reply: {
+      to: ["dschrute@dundermifflin.com"],
+      cc: ["mscott@dundermifflin.com", "jhalpert@dundermifflin.com"]
+    },
+    related: ["128219", "192818", "574822"]
+  };
+
+  it("should not mutate the original object", () => {
+    const withRemove = removeIndex(ticket, "reply.to", 0);
+    expect(withRemove.reply.to.length).toBe(0);
+    expect(ticket.reply.to.length).toBe(1);
+  });
+
+  it("removes an item from an array", () => {
+    const withRemove = removeIndex(ticket, "reply.cc", 1);
+    expect(withRemove.reply.cc.length).toBe(1);
+  });
+
+  it("throws TypeError if path is not an array", () => {
+    function throwTypeError() {
+      removeIndex(ticket, "body", 0);
+    }
+
+    expect(throwTypeError).toThrow();
   });
 });

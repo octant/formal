@@ -243,8 +243,8 @@ describe("removeIndex", () => {
   });
 
   it("removes an item from an array", () => {
-    const withRemove = removeIndex(ticket, "reply.cc.0");
-    expect(withRemove.reply.cc.length).toBe(1);
+    const withRemove = removeIndex(ticket, "related.1");
+    expect(withRemove.related.length).toBe(2);
   });
 
   it("throws TypeError if path is not an array", () => {

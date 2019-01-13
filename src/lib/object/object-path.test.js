@@ -237,13 +237,13 @@ describe("removeIndex", () => {
   };
 
   it("should not mutate the original object", () => {
-    const withRemove = removeIndex(ticket, "reply.to", 0);
+    const withRemove = removeIndex(ticket, "reply.to.0");
     expect(withRemove.reply.to.length).toBe(0);
     expect(ticket.reply.to.length).toBe(1);
   });
 
   it("removes an item from an array", () => {
-    const withRemove = removeIndex(ticket, "reply.cc", 1);
+    const withRemove = removeIndex(ticket, "reply.cc.0");
     expect(withRemove.reply.cc.length).toBe(1);
   });
 

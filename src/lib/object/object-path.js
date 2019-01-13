@@ -56,9 +56,10 @@ export function push(object, path, value) {
   return obj;
 }
 
-export function removeIndex(object, path, index) {
+export function removeIndex(object, path) {
   const obj = JSON.parse(JSON.stringify(object));
   const pList = path.split(".");
+  const index = pList.pop();
   const key = pList.pop();
 
   const pointer = pList.reduce((accumulator, currentValue) => {

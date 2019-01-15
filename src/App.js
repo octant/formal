@@ -19,7 +19,7 @@ export default function App() {
       >
         {({ layout, methods }) => (
           <>
-            <h2>Personal Information</h2>
+            <h1>Personal Information</h1>
             {layout}
             <button onClick={methods.submit}>submit</button>
             <button onClick={methods.reset}>reset</button>

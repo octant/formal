@@ -1,9 +1,10 @@
 import React from "react";
 
 function SubFormTitle(props) {
+  const { depth } = props;
   const { label } = props.definition;
 
-  return <h3>{label}</h3>;
+  return React.createElement(`h${depth + 1}`, {}, label);
 }
 
 function SubformList(props) {
@@ -25,13 +26,13 @@ function SubformList(props) {
 }
 
 function SubformListItem(props) {
-  const { name, children: form } = props;
+  const { name, children: form, depth } = props;
   const { itemLabel: label } = props.definition;
   const { handleRemoveIndex } = props.methods;
 
   return (
     <div>
-      <h3>{label}</h3>
+      {React.createElement(`h${depth + 2}`, {}, label)}
       {form}
       <button onClick={() => handleRemoveIndex(name)}>-</button>
     </div>

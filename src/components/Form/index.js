@@ -28,7 +28,7 @@ export default function Formula(props) {
     updateForm({ ...schema.getForm(), ...values });
   }
 
-  function createElement(key, value, layout, children) {
+  function createElement(key, value, layout, depth, children) {
     return React.createElement(
       layout,
       {
@@ -41,7 +41,8 @@ export default function Formula(props) {
           handleInsert,
           handleRemoveIndex,
           getForm: schema.getForm
-        }
+        },
+        depth
       },
       children
     );
@@ -51,7 +52,7 @@ export default function Formula(props) {
     onSubmit(form);
   }
 
-  function applyLayout(object = form, d = 0, paths = []) {
+  function applyLayout(object = form, d = 1, paths = []) {
     const entries = [];
 
     Object.entries(object).forEach(([key, value], i) => {
@@ -59,26 +60,27 @@ export default function Formula(props) {
 
       if (Object.prototype.toString.call(value) === "[object Object]") {
         entries[i] = [
-          createElement(key, value, layout.title),
+          createElement(key, value, layout.title, d),
           ...applyLayout(value, d + 1, [...paths, key])
         ];
-        entries.push(createElement(name, entries.pop(), layout.subform));
+        entries.push(createElement(name, entries.pop(), layout.subform, d));
       } else if (Object.prototype.toString.call(value) === "[object Array]") {
         entries.push([
-          createElement(name, value, layout.title),
+          createElement(name, value, layout.title, d),
           ...value.map((x, j) => {
             return createElement(
               [name, j].join("."),
               value,
               layout.subformListItem,
+              d,
               applyLayout(x, d + 1, [...paths, key, j])
             );
           })
         ]);
 
-        entries.push(createElement(name, entries.pop(), layout.subformList));
+        entries.push(createElement(name, entries.pop(), layout.subformList), d);
       } else {
-        entries.push(createElement(name, value, layout.input));
+        entries.push(createElement(name, value, layout.input, d));
       }
     });
 

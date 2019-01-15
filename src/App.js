@@ -2,7 +2,7 @@ import React from "react";
 import "./App.css";
 
 import schema from "./person.schema";
-import Layout from "./components/Form/Layout";
+import Layout from "./Layout";
 import FormWrapper from "./components/Form";
 
 export default function App() {

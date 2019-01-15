@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 
-import Schema from "./Schema";
-import { push, removeIndex, set } from "../../lib/object/object-path";
+import Schema from "./lib/schema";
+import { push, removeIndex, set } from "./lib/object/object-path";
 
-export default props => {
+export default function Formula(props) {
   const { schema: definition, values, layout, onSubmit, children } = props;
   const schema = new Schema(definition);
   const [form, updateForm] = useState({ ...schema.getForm(), ...values });
@@ -85,4 +85,4 @@ export default props => {
     reset: handleReset,
     submit: handleSubmit
   });
-};
+}

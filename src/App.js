@@ -17,12 +17,13 @@ export default function App() {
         }}
         onSubmit={form => console.log(form)}
       >
-        {(inputs, methods) => (
+        {({ layout, methods }) => (
           <>
             <h2>Personal Information</h2>
-            {inputs}
+            {layout}
             <button onClick={methods.submit}>submit</button>
             <button onClick={methods.reset}>reset</button>
+            <button onClick={methods.clear}>clear</button>
           </>
         )}
       </FormWrapper>

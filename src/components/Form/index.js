@@ -12,6 +12,10 @@ export default function Formula(props) {
     updateForm(set(form, e.target.name, e.target.value));
   }
 
+  function handleClear(key) {
+    updateForm(schema.getForm());
+  }
+
   function handleInsert(key, definition) {
     updateForm(push(form, key, definition));
   }
@@ -47,7 +51,7 @@ export default function Formula(props) {
     onSubmit(form);
   }
 
-  function objectToComponentList(object = form, d = 0, paths = []) {
+  function applyLayout(object = form, d = 0, paths = []) {
     const entries = [];
 
     Object.entries(object).forEach(([key, value], i) => {
@@ -56,7 +60,7 @@ export default function Formula(props) {
       if (Object.prototype.toString.call(value) === "[object Object]") {
         entries[i] = [
           createElement(key, value, layout.title),
-          ...objectToComponentList(value, d + 1, [...paths, key])
+          ...applyLayout(value, d + 1, [...paths, key])
         ];
         entries.push(createElement(name, entries.pop(), layout.subform));
       } else if (Object.prototype.toString.call(value) === "[object Array]") {
@@ -67,7 +71,7 @@ export default function Formula(props) {
               [name, j].join("."),
               value,
               layout.subformListItem,
-              objectToComponentList(x, d + 1, [...paths, key, j])
+              applyLayout(x, d + 1, [...paths, key, j])
             );
           })
         ]);
@@ -81,8 +85,12 @@ export default function Formula(props) {
     return entries;
   }
 
-  return children(objectToComponentList(), {
-    reset: handleReset,
-    submit: handleSubmit
+  return children({
+    layout: applyLayout(),
+    methods: {
+      clear: handleClear,
+      reset: handleReset,
+      submit: handleSubmit
+    }
   });
 }

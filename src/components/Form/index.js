@@ -91,6 +91,7 @@ export default function Formula(props) {
       clear: handleClear,
       reset: handleReset,
       submit: handleSubmit
-    }
+    },
+    state: { form }
   });
 }

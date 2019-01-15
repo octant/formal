@@ -61,7 +61,7 @@ export default props => {
         entries.push(createElement(name, entries.pop(), layout.subform));
       } else if (Object.prototype.toString.call(value) === "[object Array]") {
         entries.push([
-          createElement(key, value, layout.title),
+          createElement(name, value, layout.title),
           ...value.map((x, j) => {
             return createElement(
               [name, j].join("."),

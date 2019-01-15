@@ -41,7 +41,7 @@ export const address = {
   }
 };
 
-export const schema = {
+export const person = {
   firstName: {
     type: "text",
     label: "First Name"
@@ -62,4 +62,12 @@ export const schema = {
   }
 };
 
+const schema = {
+  ...person,
+  spouse: {
+    type: "object",
+    label: "Spouse",
+    definition: person
+  }
+};
 export default schema;

@@ -7,15 +7,16 @@ function SubFormTitle(props) {
 }
 
 function SubformList(props) {
-  const { name, definition, value: items } = props;
+  const { name, value: items } = props;
   const { handleInsert, getForm } = props.methods;
+  const { definition } = props.definition;
 
   return (
     <div>
       {items.map(item => item)}
       <button
         key={`add-${name}`}
-        onClick={() => handleInsert(name, getForm(definition.definition))}
+        onClick={() => handleInsert(name, getForm(definition))}
       >
         +
       </button>

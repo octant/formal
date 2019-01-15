@@ -1,8 +1,6 @@
-import validator from "./";
+import validate from "./";
 
 describe("validator", () => {
-  const validate = validator("m");
-
   const testFailure = jest.fn(() => false);
   const testSuccess = jest.fn(() => true);
 
@@ -12,7 +10,7 @@ describe("validator", () => {
   ];
 
   it("should run every test", () => {
-    const errors = validate(tests);
+    const errors = validate("m", tests);
 
     expect(errors.length).toBe(1);
     expect(testFailure.mock.calls.length).toBe(1);
@@ -20,7 +18,7 @@ describe("validator", () => {
   });
 
   it("should return a list of error messages", () => {
-    const errors = validate(tests);
+    const errors = validate("X", tests);
 
     expect(errors.length).toBe(1);
     expect(errors[0]).toBe("You should see this");

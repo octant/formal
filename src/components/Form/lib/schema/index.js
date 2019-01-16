@@ -6,14 +6,24 @@ export default class {
     this._traverseSchema();
   }
 
-  _ensurePresent(object, key, defaultValue) {
-    return object[key] ? object : { ...object, [key]: defaultValue };
+  _ensurePresent(object, values = {}) {
+    let missing = {};
+
+    Object.entries(values).forEach(([key, value]) => {
+      missing = object[key] ? missing : { ...missing, [key]: value };
+    });
+
+    return { ...object, ...missing };
   }
 
   _normalizeDefinition(key, definition) {
     // ensure optional schema options have a default value
 
-    this._definitions[key] = this._ensurePresent(definition, "validations", []);
+    this._definitions[key] = this._ensurePresent(definition, {
+      display: true,
+      required: false,
+      validations: []
+    });
   }
 
   _traverseSchema(schema = this._schema, path = []) {

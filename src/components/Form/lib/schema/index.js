@@ -6,20 +6,30 @@ export default class {
     this._traverseSchema();
   }
 
+  _ensurePresent(object, key, defaultValue) {
+    return object[key] ? object : { ...object, [key]: defaultValue };
+  }
+
+  _normalizeDefinition(key, definition) {
+    // ensure optional schema options have a default value
+
+    this._definitions[key] = this._ensurePresent(definition, "validators", []);
+  }
+
   _traverseSchema(schema = this._schema, path = []) {
     Object.entries(schema).forEach(([key, value]) => {
       switch (value.type) {
         case "object":
-          this._definitions[[...path, key].join(".")] = value;
+          this._normalizeDefinition([...path, key].join("."), value);
           this._traverseSchema(value.definition, [...path, key]);
           break;
         case "array":
-          this._definitions[[...path, key].join(".")] = value;
-          this._definitions[[...path, key, "$"].join(".")] = value;
+          this._normalizeDefinition([...path, key].join("."), value);
+          this._normalizeDefinition([...path, key, "$"].join("."), value);
           this._traverseSchema(value.definition, [...path, key, "$"]);
           break;
         default:
-          this._definitions[[...path, key].join(".")] = value;
+          this._normalizeDefinition([...path, key].join("."), value);
           break;
       }
     });

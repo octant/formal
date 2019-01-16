@@ -44,7 +44,8 @@ export const address = {
 export const person = {
   firstName: {
     type: "text",
-    label: "First Name"
+    label: "First Name",
+    validations: [{ test: value => value === "M", message: "Must be an 'M'" }]
   },
   lastName: { type: "text", label: "Last Name" },
   age: { type: "number", label: "Age" },
@@ -62,12 +63,7 @@ export const person = {
   }
 };
 
-const schema = {
+export default {
   ...person,
-  spouse: {
-    type: "object",
-    label: "Spouse",
-    definition: person
-  }
+  spouse: { type: "object", label: "Spouse", definition: person }
 };
-export default schema;

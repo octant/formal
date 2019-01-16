@@ -2,13 +2,23 @@ import React, { useState } from "react";
 
 import Schema from "./lib/schema";
 import { push, removeIndex, set } from "./lib/object/object-path";
+import validator from "./lib/validator";
 
 export default function Formula(props) {
   const { schema: definition, values, layout, onSubmit, children } = props;
   const schema = new Schema(definition);
   const [form, updateForm] = useState({ ...schema.getForm(), ...values });
+  const [errors, updateErrors] = useState({});
 
   function handleChange(e) {
+    updateErrors({
+      ...errors,
+      [e.target.name]: validator(
+        e.target.value,
+        schema.getDefinition(e.target.name).validations
+      )
+    });
+
     updateForm(set(form, e.target.name, e.target.value));
   }
 

@@ -13,7 +13,7 @@ export default class {
   _normalizeDefinition(key, definition) {
     // ensure optional schema options have a default value
 
-    this._definitions[key] = this._ensurePresent(definition, "validators", []);
+    this._definitions[key] = this._ensurePresent(definition, "validations", []);
   }
 
   _traverseSchema(schema = this._schema, path = []) {

@@ -1,4 +1,5 @@
 import React from "react";
+import FormalInput from "./components/Input";
 
 function SubFormTitle(props) {
   const { depth } = props;
@@ -53,7 +54,12 @@ function Input(props) {
   return (
     <div>
       <label htmlFor={name}>{label}: </label>
-      <input name={name} type={type} value={value} onChange={handleChange} />
+      <FormalInput
+        name={name}
+        type={type}
+        value={value}
+        onChange={handleChange}
+      />
     </div>
   );
 }

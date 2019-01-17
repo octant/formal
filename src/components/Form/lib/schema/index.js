@@ -17,8 +17,6 @@ export default class {
   }
 
   _normalizeDefinition(key, definition) {
-    // ensure optional schema options have a default value
-
     this._definitions[key] = this._ensurePresent(definition, {
       display: true,
       required: false,

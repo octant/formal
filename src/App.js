@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.css";
 
-import schema from "./person.schema";
+import form from "./person.schema";
 import Layout from "./Layout";
 import FormWrapper from "./components/Form";
 
@@ -9,7 +9,7 @@ export default function App() {
   return (
     <div className="App">
       <FormWrapper
-        schema={schema}
+        form={form}
         layout={Layout}
         values={{
           firstName: "Michael",

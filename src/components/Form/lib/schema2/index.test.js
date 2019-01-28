@@ -98,5 +98,12 @@ describe("Schema", () => {
     expect(vehicleForm.make).toBe("Honda");
   });
 
-  it("should allow subschemas", () => {});
+  it("should allow subschemas", () => {
+    const personForm = personSchema.form();
+
+    expect(Object.keys(personForm).length).toBe(5);
+    expect(personForm.vehicles).toEqual([]);
+    expect(Object.keys(personSchema._subForms).length).toBe(1);
+    expect(Object.keys(personSchema._lists).length).toBe(1);
+  });
 });

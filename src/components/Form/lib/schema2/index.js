@@ -1,15 +1,16 @@
-export default class {
-  constructor(schema, parent = "", meth) {
+export default class Schema {
+  constructor(schema, parent, defs) {
     const { _name, _label, ..._schema } = schema;
 
+    this._parent = parent;
     this._name = _name;
     this._label = _label;
     this._schema = _schema;
-    this._definitions = {};
+    this._subForms = {};
+    this._lists = {};
+    this._definitions = defs ? defs : {};
 
-    this.traverser = meth ? meth : this._traverseSchema;
-    this.traverser();
-    console.log(this._definitions);
+    this._traverseSchema();
   }
 
   _ensurePresent(object, values = {}) {
@@ -20,8 +21,24 @@ export default class {
     }, object);
   }
 
-  _normalize({ definition, ...rest }) {
-    return this._ensurePresent(rest, {
+  _normalizeSubForm(name, definition) {
+    this._subForms[name] = new Schema(
+      definition.definition,
+      name,
+      this._definitions
+    );
+  }
+
+  _normalizeList(name, definition) {
+    this._lists[name] = new Schema(
+      definition.definition,
+      `${name}.$`,
+      this._definitions
+    );
+  }
+
+  _normalizeDefinition(definition) {
+    return this._ensurePresent(definition, {
       defaultValue: "",
       display: true,
       required: false,
@@ -31,7 +48,15 @@ export default class {
 
   _traverseSchema() {
     Object.entries(this._schema).forEach(([k, v]) => {
-      this._definitions[k] = this._normalize(v);
+      if (v.type === "subform") {
+        this._normalizeSubForm(k, v);
+      } else if (v.type === "list") {
+        this._normalizeList(k, v);
+      } else {
+        this._definitions[
+          `${this._parent ? this._parent + "." : ""}${k}`
+        ] = this._normalizeDefinition(v);
+      }
     });
   }
 
@@ -45,7 +70,13 @@ export default class {
 
   form() {
     return Object.entries(this._schema).reduce((prev, [key, value]) => {
-      return { ...prev, [key]: value.defaultValue };
+      if (value.type === "subform") {
+        return { ...prev, [key]: this._subForms[key].form() };
+      } else if (value.type === "list") {
+        return { ...prev, [key]: [] };
+      } else {
+        return { ...prev, [key]: value.defaultValue };
+      }
     }, {});
   }
 }

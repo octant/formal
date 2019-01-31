@@ -36,6 +36,13 @@ export default class Schema {
 
     this._subForms[n] = new Schema(
       definition.definition,
+      `${this._parent ? this._parent + "." : ""}${name}`, // I think I can fix these parents
+      this._subForms,
+      this._definitions
+    );
+
+    this._subForms[`${n}.$`] = new Schema(
+      definition.definition,
       `${this._parent ? this._parent + "." : ""}${name}.$`,
       this._subForms,
       this._definitions
@@ -73,6 +80,9 @@ export default class Schema {
     };
   }
 
+  definitions() {
+    return this._definitions;
+  }
   name() {
     return this._name;
   }
@@ -95,7 +105,7 @@ export default class Schema {
           ...prev,
           [key]: [
             this._subForms[
-              `${this._parent ? this._parent + "." : ""}${key}`
+              `${this._parent ? this._parent + "." : ""}${key}.$`
             ].getForm()
           ]
         };
@@ -113,13 +123,12 @@ export default class Schema {
   getDefinition(name) {
     const def = name.replace(/(\.)[0-9]{1,}(\.?)/g, (a, b, c) => `${b}$${c}`);
 
-    // console.log(this._definitions[def]);
     return this._definitions[def];
   }
 
   getSubForm(name) {
-    // const def = name.replace(/(\.)[0-9]{1,}(\.?)/g, (a, b, c) => `${b}$${c}`);
-    // console.log(name, this._subForms[name] || {});
-    return this._subForms[name];
+    const def = name.replace(/(\.)[0-9]{1,}(\.?)/g, (a, b, c) => `${b}$${c}`);
+
+    return this._subForms[def];
   }
 }

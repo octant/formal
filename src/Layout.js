@@ -18,7 +18,6 @@ function SubFormListTitle(props) {
 }
 
 function SubformList(props) {
-  console.log(props);
   const { name, value: items } = props;
   const { handleInsert, getForm } = props.methods;
   // const { definition } = props.definition;
@@ -58,9 +57,9 @@ function SubForm(props) {
 }
 
 function Input(props) {
-  const { name, value } = props;
+  const { name, value, errors } = props;
   const { label, type } = props.definition;
-  const { handleChange } = props.methods;
+  const { handleChange, handleValidation } = props.methods;
 
   return (
     <div>
@@ -70,6 +69,8 @@ function Input(props) {
         type={type}
         value={value}
         onChange={handleChange}
+        errors={errors}
+        validate={handleValidation}
       />
     </div>
   );

@@ -16,7 +16,7 @@ export default function App() {
         form={form}
         layout={Layout}
         values={{
-          firstName: "Michael",
+          firstName: "michael",
           vehicles: [{ make: "Ford", model: "", year: "", color: "" }]
         }}
         onSubmit={form => console.log(form)}

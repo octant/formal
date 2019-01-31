@@ -38,7 +38,10 @@ export const person = {
   _label: "Person",
   firstName: {
     type: "text",
-    label: "First Name"
+    label: "First Name",
+    validations: [
+      { test: value => value[0] === "M", message: "Must start with an 'M'" }
+    ]
   },
   lastName: {
     type: "text",

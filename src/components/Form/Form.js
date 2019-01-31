@@ -8,16 +8,8 @@ export default function Formula(props) {
 
   const [form, updateForm] = useState({ ...schema.getForm(), ...values });
   const [errors, updateErrors] = useState({});
-
+  console.log("Errors: ", errors);
   function handleChange(e) {
-    updateErrors({
-      ...errors,
-      [e.target.name]: validator(
-        e.target.value,
-        schema.getDefinition(e.target.name).validations
-      )
-    });
-
     updateForm(set(form, e.target.name, e.target.value));
   }
 
@@ -41,11 +33,20 @@ export default function Formula(props) {
     updateForm({ ...schema.getForm(), ...values });
   }
 
-  function createElement(key, value, layout, depth, children, entropy) {
+  function handleValidation(name, value) {
+    console.log(name, value);
+
+    updateErrors({
+      ...errors,
+      [name]: validator(value, schema.getDefinition(name).validations)
+    });
+  }
+
+  function createElement(key, value, layout, depth, children) {
     return React.createElement(
       layout,
       {
-        key: `${entropy}-${key}`,
+        key: `${key}`,
         name: key,
         value,
         definition: schema.getSubForm(key).definition(),
@@ -70,11 +71,14 @@ export default function Formula(props) {
         key,
         name: key,
         value,
+        errors: errors[key],
         definition: schema.getDefinition(key),
+        definitions: schema.definitions(),
         methods: {
           handleChange,
           handleInsert,
           handleRemoveIndex,
+          handleValidation,
           getForm: schema.getForm
         },
         depth
@@ -84,6 +88,7 @@ export default function Formula(props) {
   }
 
   function handleSubmit() {
+    console.log(schema.getSubForm("vehicles").getForm());
     onSubmit(form);
   }
 
@@ -139,12 +144,11 @@ export default function Formula(props) {
           createElement(name, value, layout.listTitle, d),
           ...value.map((x, j) => {
             return createElement(
-              [name].join("."),
+              [name, j].join("."),
               value,
               layout.subformListItem,
               d,
-              applyLayout2(x, d + 1, [...paths, key, j]),
-              j
+              applyLayout2(x, d + 1, [...paths, key, j])
             );
           })
         ]);

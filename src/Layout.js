@@ -8,17 +8,27 @@ function SubFormTitle(props) {
   return React.createElement(`h${depth + 1}`, {}, label);
 }
 
+function SubFormListTitle(props) {
+  const { depth } = props;
+  // const { label } = props.definition || "????";
+  // console.log(props);
+  const label = "????";
+
+  return React.createElement(`h${depth + 1}`, {}, label);
+}
+
 function SubformList(props) {
+  console.log(props);
   const { name, value: items } = props;
   const { handleInsert, getForm } = props.methods;
-  const { definition } = props.definition;
+  // const { definition } = props.definition;
 
   return (
     <div>
       {items.map(item => item)}
       <button
         key={`add-${name}`}
-        onClick={() => handleInsert(name, getForm(definition))}
+        onClick={() => handleInsert(name, props.form)}
       >
         +
       </button>
@@ -28,7 +38,8 @@ function SubformList(props) {
 
 function SubformListItem(props) {
   const { name, children: form, depth } = props;
-  const { itemLabel: label } = props.definition;
+  // const { itemLabel: label } = props.definition;
+  const label = props.definition.label;
   const { handleRemoveIndex } = props.methods;
 
   return (
@@ -67,6 +78,7 @@ function Input(props) {
 export default {
   input: Input,
   title: SubFormTitle,
+  listTitle: SubFormListTitle,
   subformList: SubformList,
   subformListItem: SubformListItem,
   subform: SubForm

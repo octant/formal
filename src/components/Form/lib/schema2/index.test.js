@@ -35,7 +35,7 @@ export const phone = {
   }
 };
 
-const person = {
+export const person = {
   _name: "person",
   _label: "Person",
   firstName: {
@@ -102,6 +102,7 @@ describe("Schema", () => {
     const personForm = personSchema.form();
 
     expect(Object.keys(personForm).length).toBe(5);
+    expect(personForm.firstName).toBe("");
     expect(personForm.vehicles).toEqual([]);
     expect(Object.keys(personSchema._subForms).length).toBe(1);
     expect(Object.keys(personSchema._lists).length).toBe(1);

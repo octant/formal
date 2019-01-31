@@ -1,10 +1,14 @@
 import React from "react";
 import "./App.css";
 
-import form from "./person.schema";
+import form from "./person2.schema";
 import Layout from "./Layout";
 import FormWrapper from "./components/Form";
+// import Schema from "./components/Form/lib/schema2";
+// import { newPerson } from "./person2.schema";
 
+// const schema = new Schema(newPerson);
+// console.log(schema._definitions, schema.getForm());
 export default function App() {
   return (
     <div className="App">

@@ -1,13 +1,12 @@
 export default class Schema {
-  constructor(schema, parent, defs) {
+  constructor(schema, parent, subs, defs) {
     const { _name, _label, ..._schema } = schema;
 
     this._parent = parent;
     this._name = _name;
     this._label = _label;
     this._schema = _schema;
-    this._subForms = {};
-    this._lists = {};
+    this._subForms = subs ? subs : {};
     this._definitions = defs ? defs : {};
 
     this._traverseSchema();
@@ -22,22 +21,28 @@ export default class Schema {
   }
 
   _normalizeSubForm(name, definition) {
-    this._subForms[name] = new Schema(
+    const n = `${this._parent ? this._parent + "." : ""}${name}`;
+
+    this._subForms[n] = new Schema(
       definition.definition,
-      name,
+      `${this._parent ? this._parent + "." : ""}${name}`,
+      this._subForms,
       this._definitions
     );
   }
 
-  _normalizeList(name, definition) {
-    this._lists[name] = new Schema(
+  _normalizeSubFormList(name, definition) {
+    const n = `${this._parent ? this._parent + "." : ""}${name}`;
+
+    this._subForms[n] = new Schema(
       definition.definition,
-      `${name}.$`,
+      `${this._parent ? this._parent + "." : ""}${name}.$`,
+      this._subForms,
       this._definitions
     );
   }
 
-  _normalizeDefinition(definition) {
+  _normalizeDefinition(definition, k) {
     return this._ensurePresent(definition, {
       defaultValue: "",
       display: true,
@@ -51,13 +56,21 @@ export default class Schema {
       if (v.type === "subform") {
         this._normalizeSubForm(k, v);
       } else if (v.type === "list") {
-        this._normalizeList(k, v);
+        this._normalizeSubFormList(k, v);
       } else {
         this._definitions[
           `${this._parent ? this._parent + "." : ""}${k}`
-        ] = this._normalizeDefinition(v);
+        ] = this._normalizeDefinition(v, k);
       }
     });
+  }
+
+  definition() {
+    return {
+      type: "schema",
+      name: this.name(),
+      label: this.label()
+    };
   }
 
   name() {
@@ -68,15 +81,45 @@ export default class Schema {
     return this._label;
   }
 
-  form() {
+  getForm() {
     return Object.entries(this._schema).reduce((prev, [key, value]) => {
       if (value.type === "subform") {
-        return { ...prev, [key]: this._subForms[key].form() };
+        return {
+          ...prev,
+          [key]: this._subForms[
+            `${this._parent ? this._parent + "." : ""}${key}`
+          ].getForm()
+        };
       } else if (value.type === "list") {
-        return { ...prev, [key]: [] };
+        return {
+          ...prev,
+          [key]: [
+            this._subForms[
+              `${this._parent ? this._parent + "." : ""}${key}`
+            ].getForm()
+          ]
+        };
       } else {
-        return { ...prev, [key]: value.defaultValue };
+        return {
+          ...prev,
+          [key]: this._definitions[
+            `${this._parent ? this._parent + "." : ""}${key}`
+          ].defaultValue
+        };
       }
     }, {});
+  }
+
+  getDefinition(name) {
+    const def = name.replace(/(\.)[0-9]{1,}(\.?)/g, (a, b, c) => `${b}$${c}`);
+
+    // console.log(this._definitions[def]);
+    return this._definitions[def];
+  }
+
+  getSubForm(name) {
+    // const def = name.replace(/(\.)[0-9]{1,}(\.?)/g, (a, b, c) => `${b}$${c}`);
+    // console.log(name, this._subForms[name] || {});
+    return this._subForms[name];
   }
 }

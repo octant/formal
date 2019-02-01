@@ -57,7 +57,7 @@ export const person = {
   },
   vehicles: {
     type: "list",
-    label: "vehicles",
+    label: "Vehicles",
     min: 0,
     max: 3,
     definition: vehicle
@@ -66,5 +66,5 @@ export const person = {
 
 export default {
   ...person,
-  spouse: { type: "subform", definition: person }
+  spouse: { type: "subform", definition: { ...person, _label: "Spouse" } }
 };

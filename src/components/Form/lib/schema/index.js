@@ -35,7 +35,10 @@ export default class Schema {
     const n = `${this._parent ? this._parent + "." : ""}${name}`;
 
     this._subForms[n] = new Schema(
-      definition.definition,
+      {
+        ...definition.definition,
+        _label: definition.label
+      },
       `${this._parent ? this._parent + "." : ""}${name}`, // I think I can fix these parents
       this._subForms,
       this._definitions

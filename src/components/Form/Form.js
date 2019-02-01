@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { ErrorContext } from "./contexts/ErrorContext";
 
 import { push, removeIndex, set } from "./lib/object/object-path";
@@ -8,6 +8,11 @@ export default function Formula(props) {
   const { errors } = useContext(ErrorContext);
 
   const [form, updateForm] = useState({ ...schema.getForm(), ...values });
+
+  useEffect(() => {
+    console.log("mounting...");
+    console.log(schema._subForms);
+  }, []);
 
   function handleChange(e) {
     updateForm(set(form, e.target.name, e.target.value));
@@ -105,7 +110,9 @@ export default function Formula(props) {
             );
           })
         ]);
-        entries.push(createElement(name, entries.pop(), layout.subformList), d);
+        const foo = entries.pop();
+
+        entries.push(createElement(name, foo, layout.subformList, d));
       } else {
         entries.push(createInput(name, value, layout.input, d));
       }

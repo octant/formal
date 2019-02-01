@@ -10,7 +10,7 @@ function SubFormTitle(props) {
 
 function SubFormListTitle(props) {
   const { depth } = props;
-  const label = "????";
+  const { label } = props.definition;
 
   return React.createElement(`h${depth + 1}`, {}, label);
 }
@@ -34,7 +34,6 @@ function SubformList(props) {
 
 function SubformListItem(props) {
   const { name, children: form, depth } = props;
-  // const { itemLabel: label } = props.definition;
   const label = props.definition.label;
   const { handleRemoveIndex } = props.methods;
 

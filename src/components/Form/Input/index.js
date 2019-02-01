@@ -8,7 +8,7 @@ const Input = props => {
   const { errors, dispatch } = useContext(ErrorContext);
   const { inputs, inputDispatcher } = useContext(InputContext);
   const [initialValue] = useState(value);
-  const [observedValue, updateObservedValue] = useState(inputs[observe]);
+  const [observedValue] = useState(inputs[observe]);
   const [dirty, setDirty] = useState(false);
 
   const add = messages => dispatch({ type: "add", name, messages });
@@ -17,12 +17,11 @@ const Input = props => {
 
   useEffect(
     () => {
-      console.log("rendering... " + name);
       set();
       if (initialValue !== value) setDirty(true);
 
       if (value !== "" || dirty || inputs[observe] !== observedValue) {
-        const messages = validate(value, validations);
+        const messages = validate([value, inputs[observe]], validations);
         if (messages.length > 0) {
           add(messages);
         } else {

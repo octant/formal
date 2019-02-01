@@ -40,7 +40,10 @@ export const person = {
     type: "text",
     label: "First Name",
     validations: [
-      { test: value => value[0] === "M", message: "Must start with an 'M'" }
+      {
+        test: ([value, ...rest]) => value[0] === "M",
+        message: "Must start with an 'M'"
+      }
     ]
   },
   lastName: {
@@ -71,7 +74,16 @@ export default {
     definition: {
       ...person,
       _label: "Spouse",
-      lastName: { ...person.lastName, observe: ["lastName"] }
+      lastName: {
+        ...person.lastName,
+        observe: ["lastName"],
+        validations: [
+          {
+            test: ([value, observed]) => value === observed,
+            message: "Must have same last name"
+          }
+        ]
+      }
     }
   }
 };

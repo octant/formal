@@ -57,7 +57,8 @@ export default class Schema {
       defaultValue: "",
       display: true,
       required: false,
-      validations: []
+      validations: [],
+      observe: []
     });
   }
 

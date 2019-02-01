@@ -1,4 +1,6 @@
 export const vehicle = {
+  _name: "vehicle",
+  _label: "Vehicle",
   make: {
     type: "text",
     label: "Make",
@@ -18,52 +20,51 @@ export const vehicle = {
   }
 };
 
-export const address = {
-  street: {
+export const phone = {
+  _name: "phone",
+  _label: "Phone",
+  number: {
     type: "text",
-    label: "Street",
-    defaultValue: ""
+    label: "Phone #"
   },
-  city: {
+  type: {
     type: "text",
-    label: "City",
-    defaultValue: ""
-  },
-  state: {
-    type: "text",
-    label: "State",
-    defaultValue: ""
-  },
-  country: {
-    type: "text",
-    label: "Country",
-    defaultValue: ""
+    label: "Type"
   }
 };
 
 export const person = {
+  _name: "person",
+  _label: "Person",
   firstName: {
     type: "text",
     label: "First Name",
-    validations: [{ test: value => value === "M", message: "Must be an 'M'" }]
+    validations: [
+      { test: value => value[0] === "M", message: "Must start with an 'M'" }
+    ]
   },
-  lastName: { type: "text", label: "Last Name" },
-  age: { type: "number", label: "Age" },
+  lastName: {
+    type: "text",
+    label: "Last Name"
+  },
+  age: {
+    type: "number",
+    label: "Age"
+  },
+  phone: {
+    type: "subform",
+    definition: phone
+  },
   vehicles: {
-    type: "array",
-    label: "Vehicles",
-    itemLabel: "Vehicle",
-    defaultValue: 1,
+    type: "list",
+    label: "vehicles",
+    min: 0,
+    max: 3,
     definition: vehicle
-  },
-  address: {
-    type: "object",
-    label: "Address",
-    definition: address
   }
 };
 
 export default {
   ...person,
-  spouse: { type: "object", label: "Spouse", definition: person }
+  spouse: { type: "subform", definition: person }
 };

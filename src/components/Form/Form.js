@@ -1,14 +1,12 @@
 import React, { useState } from "react";
 
 import { push, removeIndex, set } from "./lib/object/object-path";
-import validator from "./lib/validator";
 
 export default function Formula(props) {
   const { schema, values, layout, onSubmit, children } = props;
 
   const [form, updateForm] = useState({ ...schema.getForm(), ...values });
-  const [errors, updateErrors] = useState({});
-  console.log("Errors: ", errors);
+
   function handleChange(e) {
     updateForm(set(form, e.target.name, e.target.value));
   }
@@ -31,15 +29,6 @@ export default function Formula(props) {
 
   function handleReset() {
     updateForm({ ...schema.getForm(), ...values });
-  }
-
-  function handleValidation(name, value) {
-    console.log(name, value);
-
-    updateErrors({
-      ...errors,
-      [name]: validator(value, schema.getDefinition(name).validations)
-    });
   }
 
   function createElement(key, value, layout, depth, children) {
@@ -71,14 +60,12 @@ export default function Formula(props) {
         key,
         name: key,
         value,
-        errors: errors[key],
         definition: schema.getDefinition(key),
         definitions: schema.definitions(),
         methods: {
           handleChange,
           handleInsert,
           handleRemoveIndex,
-          handleValidation,
           getForm: schema.getForm
         },
         depth
@@ -88,46 +75,10 @@ export default function Formula(props) {
   }
 
   function handleSubmit() {
-    console.log(schema.getSubForm("vehicles").getForm());
     onSubmit(form);
   }
 
-  // function applyLayout(object = form, d = 1, paths = []) {
-  //   const entries = [];
-
-  //   Object.entries(object).forEach(([key, value], i) => {
-  //     const name = [...paths, key].join(".");
-
-  //     if (Object.prototype.toString.call(value) === "[object Object]") {
-  //       entries[i] = [
-  //         createElement(key, value, layout.title, d),
-  //         ...applyLayout(value, d + 1, [...paths, key])
-  //       ];
-  //       entries.push(createElement(name, entries.pop(), layout.subform, d));
-  //     } else if (Object.prototype.toString.call(value) === "[object Array]") {
-  //       entries.push([
-  //         createElement(name, value, layout.title, d),
-  //         ...value.map((x, j) => {
-  //           return createElement(
-  //             [name, j].join("."),
-  //             value,
-  //             layout.subformListItem,
-  //             d,
-  //             applyLayout(x, d + 1, [...paths, key, j])
-  //           );
-  //         })
-  //       ]);
-
-  //       entries.push(createElement(name, entries.pop(), layout.subformList), d);
-  //     } else {
-  //       entries.push(createElement(name, value, layout.input, d));
-  //     }
-  //   });
-
-  //   return entries;
-  // }
-
-  function applyLayout2(object = form, d = 1, paths = []) {
+  function applyLayout(object = form, d = 1, paths = []) {
     const entries = [];
 
     Object.entries(object).forEach(([key, value], i) => {
@@ -136,7 +87,7 @@ export default function Formula(props) {
       if (Object.prototype.toString.call(value) === "[object Object]") {
         entries[i] = [
           createElement(key, value, layout.title, d),
-          ...applyLayout2(value, d + 1, [...paths, key])
+          ...applyLayout(value, d + 1, [...paths, key])
         ];
         entries.push(createElement(name, entries.pop(), layout.subform, d));
       } else if (Object.prototype.toString.call(value) === "[object Array]") {
@@ -148,7 +99,7 @@ export default function Formula(props) {
               value,
               layout.subformListItem,
               d,
-              applyLayout2(x, d + 1, [...paths, key, j])
+              applyLayout(x, d + 1, [...paths, key, j])
             );
           })
         ]);
@@ -162,7 +113,7 @@ export default function Formula(props) {
   }
 
   return children({
-    layout: applyLayout2(),
+    layout: applyLayout(),
     methods: {
       clear: handleClear,
       reset: handleReset,

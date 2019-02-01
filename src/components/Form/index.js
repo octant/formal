@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import Schema from "./lib/schema2";
+import Schema from "./lib/schema";
 import Form from "./Form";
 
 export default function Formula(props) {

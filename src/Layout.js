@@ -1,5 +1,5 @@
 import React from "react";
-import FormalInput from "./components/Input";
+import FormalInput from "./components/Form/Input";
 
 function SubFormTitle(props) {
   const { depth } = props;
@@ -10,8 +10,6 @@ function SubFormTitle(props) {
 
 function SubFormListTitle(props) {
   const { depth } = props;
-  // const { label } = props.definition || "????";
-  // console.log(props);
   const label = "????";
 
   return React.createElement(`h${depth + 1}`, {}, label);
@@ -19,8 +17,7 @@ function SubFormListTitle(props) {
 
 function SubformList(props) {
   const { name, value: items } = props;
-  const { handleInsert, getForm } = props.methods;
-  // const { definition } = props.definition;
+  const { handleInsert } = props.methods;
 
   return (
     <div>
@@ -57,9 +54,9 @@ function SubForm(props) {
 }
 
 function Input(props) {
-  const { name, value, errors } = props;
-  const { label, type } = props.definition;
-  const { handleChange, handleValidation } = props.methods;
+  const { name, value } = props;
+  const { label, type, validations } = props.definition;
+  const { handleChange } = props.methods;
 
   return (
     <div>
@@ -68,9 +65,8 @@ function Input(props) {
         name={name}
         type={type}
         value={value}
+        validations={validations}
         onChange={handleChange}
-        errors={errors}
-        validate={handleValidation}
       />
     </div>
   );

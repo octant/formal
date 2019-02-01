@@ -4,7 +4,7 @@ import validate from "../lib/validator";
 
 const Input = props => {
   const { type, name, value, onChange, validations } = props;
-  const { state, dispatch } = useContext(ErrorContext);
+  const { errors, dispatch } = useContext(ErrorContext);
   const [initialValue] = useState(value);
   const [dirty, setDirty] = useState(false);
 
@@ -37,7 +37,7 @@ const Input = props => {
         onChange={onChange}
       />
       <div>
-        <span>{state[name] ? state[name][0] : ""}</span>
+        <span>{errors[name] ? errors[name][0] : ""}</span>
       </div>
     </>
   );

@@ -4,23 +4,23 @@ let ErrorContext = createContext();
 
 let initialState = {};
 
-let reducer = (state, action) => {
+let reducer = (errors, action) => {
   switch (action.type) {
     case "reset":
       return initialState;
     case "add":
-      return { ...state, [action.name]: action.messages };
+      return { ...errors, [action.name]: action.messages };
     case "remove":
-      let { [action.name]: self, ...rest } = state;
+      let { [action.name]: self, ...rest } = errors;
       return { ...rest };
     default:
-      return { ...state };
+      return { ...errors };
   }
 };
 
 function ErrorContextProvider(props) {
-  let [state, dispatch] = useReducer(reducer, initialState);
-  let value = { state, dispatch };
+  let [errors, dispatch] = useReducer(reducer, initialState);
+  let value = { errors, dispatch };
 
   return (
     <ErrorContext.Provider value={value}>

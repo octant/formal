@@ -1,10 +1,11 @@
-import React, { useState } from "react";
-import { ErrorContextProvider } from "./contexts/ErrorContext";
+import React, { useState, useContext } from "react";
+import { ErrorContext } from "./contexts/ErrorContext";
 
 import { push, removeIndex, set } from "./lib/object/object-path";
 
 export default function Formula(props) {
   const { schema, values, layout, onSubmit, children } = props;
+  const { errors, dispatch } = useContext(ErrorContext);
 
   const [form, updateForm] = useState({ ...schema.getForm(), ...values });
 
@@ -113,17 +114,14 @@ export default function Formula(props) {
     return entries;
   }
 
-  return (
-    <ErrorContextProvider>
-      {children({
-        layout: applyLayout(),
-        methods: {
-          clear: handleClear,
-          reset: handleReset,
-          submit: handleSubmit
-        },
-        state: { form }
-      })}
-    </ErrorContextProvider>
-  );
+  return children({
+    layout: applyLayout(),
+    methods: {
+      clear: handleClear,
+      reset: handleReset,
+      submit: handleSubmit
+    },
+    isValid: Object.keys(errors).length === 0,
+    state: { form }
+  });
 }

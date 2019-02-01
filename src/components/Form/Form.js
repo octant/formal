@@ -5,7 +5,7 @@ import { push, removeIndex, set } from "./lib/object/object-path";
 
 export default function Formula(props) {
   const { schema, values, layout, onSubmit, children } = props;
-  const { errors, dispatch } = useContext(ErrorContext);
+  const { errors } = useContext(ErrorContext);
 
   const [form, updateForm] = useState({ ...schema.getForm(), ...values });
 
@@ -122,6 +122,6 @@ export default function Formula(props) {
       submit: handleSubmit
     },
     isValid: Object.keys(errors).length === 0,
-    state: { form }
+    form
   });
 }

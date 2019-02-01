@@ -66,5 +66,12 @@ export const person = {
 
 export default {
   ...person,
-  spouse: { type: "subform", definition: { ...person, _label: "Spouse" } }
+  spouse: {
+    type: "subform",
+    definition: {
+      ...person,
+      _label: "Spouse",
+      lastName: { ...person.lastName, observe: ["lastName"] }
+    }
+  }
 };

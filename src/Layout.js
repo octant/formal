@@ -54,7 +54,7 @@ function SubForm(props) {
 
 function Input(props) {
   const { name, value } = props;
-  const { label, type, validations } = props.definition;
+  const { label, observe, type, validations } = props.definition;
   const { handleChange } = props.methods;
 
   return (
@@ -64,6 +64,7 @@ function Input(props) {
         name={name}
         type={type}
         value={value}
+        observe={observe}
         validations={validations}
         onChange={handleChange}
       />

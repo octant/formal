@@ -1,17 +1,18 @@
 import React, { useState, useContext, useEffect } from "react";
 import { ErrorContext } from "./contexts/ErrorContext";
+import { InputContext } from "./contexts/InputContext";
 
 import { push, removeIndex, set } from "./lib/object/object-path";
 
 export default function Formula(props) {
   const { schema, values, layout, onSubmit, children } = props;
   const { errors } = useContext(ErrorContext);
+  const { inputs } = useContext(InputContext);
 
   const [form, updateForm] = useState({ ...schema.getForm(), ...values });
 
   useEffect(() => {
-    console.log("mounting...");
-    console.log(schema._subForms);
+    console.log(inputs);
   }, []);
 
   function handleChange(e) {
@@ -23,10 +24,6 @@ export default function Formula(props) {
   }
 
   function handleInsert(key, definition) {
-    updateForm(push(form, key, definition));
-  }
-
-  function handleInsert2(key, definition) {
     updateForm(push(form, key, definition));
   }
 
@@ -42,7 +39,7 @@ export default function Formula(props) {
     return React.createElement(
       layout,
       {
-        key: `${key}`,
+        key,
         name: key,
         value,
         definition: schema.getSubForm(key).definition(),
@@ -50,7 +47,6 @@ export default function Formula(props) {
         methods: {
           handleChange,
           handleInsert,
-          handleInsert2,
           handleRemoveIndex,
           getForm: schema.getSubForm
         },

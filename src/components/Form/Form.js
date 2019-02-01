@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { ErrorContextProvider } from "./contexts/ErrorContext";
 
 import { push, removeIndex, set } from "./lib/object/object-path";
 
@@ -112,13 +113,17 @@ export default function Formula(props) {
     return entries;
   }
 
-  return children({
-    layout: applyLayout(),
-    methods: {
-      clear: handleClear,
-      reset: handleReset,
-      submit: handleSubmit
-    },
-    state: { form }
-  });
+  return (
+    <ErrorContextProvider>
+      {children({
+        layout: applyLayout(),
+        methods: {
+          clear: handleClear,
+          reset: handleReset,
+          submit: handleSubmit
+        },
+        state: { form }
+      })}
+    </ErrorContextProvider>
+  );
 }
